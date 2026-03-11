@@ -13,13 +13,14 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const images = entry.data.images || [];
+const dateStr = new Date(entry.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>
   <article class="photo-detail">
     <header class="photo-header">
       <h2>{entry.data.title}</h2>
-      <time>{entry.data.date}</time>
+      <time>{dateStr}</time>
     </header>
 
     {entry.data.description && (
@@ -32,7 +33,7 @@ const images = entry.data.images || [];
 
     <div class="photo-grid">
       <img src={entry.data.cover} alt={entry.data.title} loading="eager" />
-      {images.map((src: string, i: number) => (
+      {images.filter((src: string) => src !== entry.data.cover).map((src: string, i: number) => (
         <img src={src} alt={`${entry.data.title} - ${i + 1}`} loading="lazy" />
       ))}
     </div>
