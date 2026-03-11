@@ -13,8 +13,8 @@
   --color-text-secondary: #666666;
   --color-border: #e0e0e0;
   --color-accent: #333333;
-  --font-heading: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+  --font-body: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --max-width: 1200px;
   --nav-height: 80px;
