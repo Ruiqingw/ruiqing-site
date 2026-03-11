@@ -21,7 +21,7 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 17px;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -29,9 +29,10 @@ html {
 
 body {
   font-family: var(--font-body);
+  font-weight: 400;
   color: var(--color-text);
   background-color: var(--color-bg);
-  line-height: 1.7;
+  line-height: 1.8;
   min-height: 100vh;
 }
 
@@ -54,7 +55,7 @@ img {
 /* ===== Typography ===== */
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -64,12 +65,12 @@ h1 {
 }
 
 h2 {
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   margin-bottom: 1rem;
 }
 
 h3 {
-  font-size: 1rem;
+  font-size: 1.15rem;
   margin-bottom: 0.75rem;
 }
 
