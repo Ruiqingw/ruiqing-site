@@ -1,0 +1,33 @@
+---
+import PostLayout from '@/layouts/PostLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allEssays = await getCollection('essays');
+  return allEssays.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const categoryLabels: Record<string, string> = {
+  essay: 'Essay',
+  'film-review': 'Film Review',
+  'book-review': 'Book Review',
+  thought: 'Thought',
+};
+---
+
+<PostLayout
+  title={entry.data.title}
+  date={entry.data.date}
+  description={entry.data.description}
+  category={entry.data.category ? categoryLabels[entry.data.category] : undefined}
+  backLink="/essays"
+  backText="Back to essays"
+>
+  <Content />
+</PostLayout>

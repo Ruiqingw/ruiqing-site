@@ -1,0 +1,128 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allEssays = await getCollection('essays', ({ data }) => !data.draft);
+const sorted = allEssays.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const categoryLabels: Record<string, string> = {
+  essay: 'Essay',
+  'film-review': 'Film',
+  'book-review': 'Book',
+  thought: 'Thought',
+};
+---
+
+<BaseLayout title="Essays" description="Random thoughts, film reviews, and book reviews">
+  <section class="essay-list">
+    <p class="section-subtitle">Thoughts, film reviews, book reviews, and other writings</p>
+
+    {sorted.length === 0 ? (
+      <p class="empty-state">Coming soon...</p>
+    ) : (
+      <ul class="posts">
+        {sorted.map((post) => (
+          <li>
+            <a href={`/essays/${post.id}`} class="post-link">
+              <div class="post-meta">
+                <time>{post.data.date}</time>
+                {post.data.category && (
+                  <span class="category">{categoryLabels[post.data.category] || post.data.category}</span>
+                )}
+              </div>
+              <h3>{post.data.title}</h3>
+              {post.data.description && (
+                <p class="post-desc">{post.data.description}</p>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .essay-list {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 4rem;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 3rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    padding: 4rem 0;
+  }
+
+  .posts {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .posts li {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .posts li:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .post-link {
+    display: block;
+    padding: 1.5rem 0;
+    transition: padding-left 0.2s ease;
+  }
+
+  .post-link:hover {
+    padding-left: 0.5rem;
+    opacity: 1;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .post-meta time {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+  }
+
+  .category {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+  }
+
+  .post-link h3 {
+    font-size: 1.05rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    margin: 0.25rem 0;
+    color: var(--color-text);
+  }
+
+  .post-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+</style>

@@ -1,0 +1,103 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPhotography = await getCollection('photography');
+  return allPhotography.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const images = entry.data.images || [];
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <article class="photo-detail">
+    <header class="photo-header">
+      <h2>{entry.data.title}</h2>
+      <time>{entry.data.date}</time>
+    </header>
+
+    {entry.data.description && (
+      <p class="photo-description">{entry.data.description}</p>
+    )}
+
+    <div class="photo-content">
+      <Content />
+    </div>
+
+    <div class="photo-grid">
+      <img src={entry.data.cover} alt={entry.data.title} loading="eager" />
+      {images.map((src: string, i: number) => (
+        <img src={src} alt={`${entry.data.title} - ${i + 1}`} loading="lazy" />
+      ))}
+    </div>
+
+    <nav class="photo-back">
+      <a href="/">&larr; Back to gallery</a>
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .photo-detail {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .photo-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .photo-header h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .photo-header time {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+  }
+
+  .photo-description {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+
+  .photo-content {
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .photo-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .photo-grid img {
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .photo-back {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .photo-back a {
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+  }
+</style>
