@@ -9,6 +9,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       <p class="gb-subtitle">留下你的足迹</p>
     </header>
 
+    <div id="gb-messages" class="gb-messages">
+      <p class="gb-loading">加载中...</p>
+    </div>
+
     <form id="gb-form" class="gb-form">
       <div class="gb-field">
         <textarea
@@ -29,10 +33,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         <button type="submit" id="gb-submit">发送</button>
       </div>
     </form>
-
-    <div id="gb-messages" class="gb-messages">
-      <p class="gb-loading">加载中...</p>
-    </div>
   </section>
 </BaseLayout>
 
@@ -59,7 +59,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   }
 
   .gb-form {
-    margin-bottom: 3rem;
+    margin-top: 3rem;
     border: 1px solid var(--color-border);
     border-radius: 8px;
     padding: 1.25rem;
@@ -163,23 +163,12 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     border-bottom: none;
   }
 
-  .gb-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 0.4rem;
-  }
-
   .gb-item-name {
-    font-weight: 500;
-    font-size: 0.95rem;
+    font-weight: 600;
+    font-size: 1rem;
     color: var(--color-text);
-  }
-
-  .gb-item-date {
-    font-size: 0.75rem;
-    color: var(--color-text-secondary);
-    letter-spacing: 0.02em;
+    display: block;
+    margin-bottom: 0.3rem;
   }
 
   .gb-item-message {
@@ -188,6 +177,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     color: var(--color-text);
     white-space: pre-wrap;
     word-break: break-word;
+  }
+
+  .gb-item-date {
+    display: block;
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.5rem;
+    letter-spacing: 0.02em;
   }
 
   @media (max-width: 768px) {
@@ -239,11 +237,9 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
         const escapedMessage = escapeHtml(msg.message);
         return `
           <div class="gb-item">
-            <div class="gb-item-header">
-              <span class="gb-item-name">${escapedName}</span>
-              <span class="gb-item-date">${date}</span>
-            </div>
+            <span class="gb-item-name">${escapedName}</span>
             <p class="gb-item-message">${escapedMessage}</p>
+            <span class="gb-item-date">——${date}</span>
           </div>
         `;
       }).join('');
