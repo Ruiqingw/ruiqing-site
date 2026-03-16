@@ -1,0 +1,298 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Guestbook" description="Leave a message">
+  <section class="guestbook">
+    <header class="gb-header">
+      <h2>Guestbook</h2>
+      <p class="gb-subtitle">留下你的足迹</p>
+    </header>
+
+    <form id="gb-form" class="gb-form">
+      <div class="gb-field">
+        <textarea
+          id="gb-message"
+          placeholder="写点什么..."
+          rows="3"
+          required
+        ></textarea>
+      </div>
+      <div class="gb-row">
+        <div class="gb-name-field">
+          <input
+            type="text"
+            id="gb-name"
+            placeholder="你的名字（留空则匿名）"
+          />
+        </div>
+        <button type="submit" id="gb-submit">发送</button>
+      </div>
+    </form>
+
+    <div id="gb-messages" class="gb-messages">
+      <p class="gb-loading">加载中...</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .guestbook {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .gb-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .gb-header h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .gb-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .gb-form {
+    margin-bottom: 3rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+
+  .gb-field textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: vertical;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-text);
+    background: transparent;
+    min-height: 80px;
+  }
+
+  .gb-field textarea::placeholder {
+    color: #bbb;
+  }
+
+  .gb-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    border-top: 1px solid var(--color-border);
+    padding-top: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .gb-name-field {
+    flex: 1;
+  }
+
+  .gb-name-field input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--color-text);
+    background: transparent;
+  }
+
+  .gb-name-field input::placeholder {
+    color: #bbb;
+  }
+
+  button[type="submit"] {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 0.5rem 1.5rem;
+    background: var(--color-text);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+
+  button[type="submit"]:hover {
+    opacity: 0.8;
+  }
+
+  button[type="submit"]:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .gb-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .gb-loading {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .gb-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    padding: 2rem 0;
+  }
+
+  .gb-item {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .gb-item:last-child {
+    border-bottom: none;
+  }
+
+  .gb-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.4rem;
+  }
+
+  .gb-item-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--color-text);
+  }
+
+  .gb-item-date {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+  }
+
+  .gb-item-message {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  @media (max-width: 768px) {
+    .guestbook {
+      padding: 1.5rem 1.25rem;
+    }
+
+    .gb-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  const SUPABASE_URL = 'https://etrtkmkizxecepvjoreq.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_FoMsrAxIp-4PzFV7CHzSBw_YQ6PXZAH';
+
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=minimal',
+  };
+
+  async function loadMessages() {
+    const container = document.getElementById('gb-messages');
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/guestbook?select=*&order=created_at.desc&limit=50`,
+        { headers }
+      );
+      const data = await res.json();
+
+      if (!data.length) {
+        container.innerHTML = '<p class="gb-empty">还没有留言，来做第一个吧 :)</p>';
+        return;
+      }
+
+      container.innerHTML = data.map((msg) => {
+        const date = new Date(msg.created_at).toLocaleDateString('zh-CN', {
+          year: 'numeric', month: 'long', day: 'numeric',
+        });
+        const escapedName = escapeHtml(msg.name);
+        const escapedMessage = escapeHtml(msg.message);
+        return `
+          <div class="gb-item">
+            <div class="gb-item-header">
+              <span class="gb-item-name">${escapedName}</span>
+              <span class="gb-item-date">${date}</span>
+            </div>
+            <p class="gb-item-message">${escapedMessage}</p>
+          </div>
+        `;
+      }).join('');
+    } catch (err) {
+      container.innerHTML = '<p class="gb-empty">加载失败，请稍后重试</p>';
+    }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  document.getElementById('gb-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('gb-submit');
+    const messageEl = document.getElementById('gb-message');
+    const nameEl = document.getElementById('gb-name');
+
+    const message = messageEl.value.trim();
+    if (!message) return;
+
+    const name = nameEl.value.trim() || '匿名';
+
+    btn.disabled = true;
+    btn.textContent = '发送中...';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ name, message }),
+      });
+
+      if (res.ok) {
+        messageEl.value = '';
+        nameEl.value = '';
+        await loadMessages();
+      } else {
+        alert('发送失败，请稍后重试');
+      }
+    } catch (err) {
+      alert('网络错误，请稍后重试');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '发送';
+    }
+  });
+
+  loadMessages();
+</script>
