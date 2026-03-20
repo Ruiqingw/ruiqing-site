@@ -1,0 +1,113 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import notesData from '@/data/notes.json';
+
+// Sort newest first
+const notes = [...notesData].sort(
+  (a, b) => new Date(b.datetime).getTime() - new Date(a.datetime).getTime()
+);
+
+function formatEntry(datetimeStr: string, timezone: string, city: string) {
+  const d = new Date(datetimeStr);
+  const date = d.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const time = d.toLocaleTimeString('zh-CN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+  return `${city} · ${date} ${time} ${timezone}`;
+}
+---
+
+<BaseLayout title="Notes" description="随想碎语">
+  <section class="notes">
+    <header class="notes-header">
+      <h2>Notes</h2>
+      <p class="notes-subtitle">随想碎语</p>
+    </header>
+
+    <div class="notes-list">
+      {notes.map((note) => (
+        <article class="note-item">
+          <p class="note-content">{note.content}</p>
+          <span class="note-meta">{formatEntry(note.datetime, note.timezone, note.city)}</span>
+        </article>
+      ))}
+
+      {notes.length === 0 && (
+        <p class="notes-empty">还没有随想</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notes {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .notes-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .notes-header h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .notes-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .note-item {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .note-item:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .note-content {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: var(--color-text);
+    margin: 0 0 0.75rem 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .note-meta {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.03em;
+  }
+
+  .notes-empty {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    padding: 3rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .notes {
+      padding: 1.5rem 1.25rem;
+    }
+  }
+</style>

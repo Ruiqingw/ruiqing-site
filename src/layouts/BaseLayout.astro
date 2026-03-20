@@ -36,6 +36,7 @@ const pageTitle = title === 'Ruiqing' ? title : `${title} — Ruiqing`;
         <a href="/" class:list={[Astro.url.pathname === '/' && 'active']}>Photography</a>
         <a href="/blog" class:list={[Astro.url.pathname.startsWith('/blog') && 'active']}>Blog</a>
         <a href="/essays" class:list={[Astro.url.pathname.startsWith('/essays') && 'active']}>Essays</a>
+        <a href="/notes" class:list={[Astro.url.pathname === '/notes' && 'active']}>Notes</a>
         <a href="/guestbook" class:list={[Astro.url.pathname === '/guestbook' && 'active']}>Guestbook</a>
         <a href="/about" class:list={[Astro.url.pathname === '/about' && 'active']}>About</a>
       </nav>
