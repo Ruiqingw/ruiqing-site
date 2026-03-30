@@ -14,18 +14,33 @@ const categoryLabels: Record<string, string> = {
   thought: 'Thought',
   poem: 'Poem',
 };
+
+// Only show filter buttons for categories that actually exist
+const existingCategories = [...new Set(
+  sorted.map(p => p.data.category).filter(Boolean)
+)] as string[];
 ---
 
 <BaseLayout title="Essays" description="Random thoughts, film reviews, and book reviews">
   <section class="essay-list">
     <p class="section-subtitle">Thoughts, film reviews, book reviews, and other writings</p>
 
+    {existingCategories.length > 1 && (
+      <div class="filters" id="filters">
+        {existingCategories.map((cat) => (
+          <button class="filter-btn" data-filter={cat}>
+            {categoryLabels[cat] || cat}
+          </button>
+        ))}
+      </div>
+    )}
+
     {sorted.length === 0 ? (
       <p class="empty-state">Coming soon...</p>
     ) : (
-      <ul class="posts">
+      <ul class="posts" id="posts">
         {sorted.map((post) => (
-          <li>
+          <li data-category={post.data.category || ''}>
             <a href={`/essays/${post.id}`} class="post-link">
               <div class="post-meta">
                 <time>{post.data.date}</time>
@@ -45,6 +60,39 @@ const categoryLabels: Record<string, string> = {
   </section>
 </BaseLayout>
 
+<script is:inline>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const items = document.querySelectorAll('#posts li');
+  const selected = new Set();
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      if (selected.has(filter)) {
+        selected.delete(filter);
+        btn.classList.remove('active');
+      } else {
+        selected.add(filter);
+        btn.classList.add('active');
+      }
+      applyFilter();
+    });
+  });
+
+  function applyFilter() {
+    items.forEach((item) => {
+      // 没有选中任何标签 → 显示全部
+      if (selected.size === 0) {
+        item.style.display = '';
+        return;
+      }
+      // OR 逻辑：只要 item 的 category 在已选中集合里就显示
+      const cat = item.dataset.category;
+      item.style.display = selected.has(cat) ? '' : 'none';
+    });
+  }
+</script>
+
 <style>
   .essay-list {
     max-width: 720px;
@@ -56,7 +104,41 @@ const categoryLabels: Record<string, string> = {
     text-align: center;
     color: var(--color-text-secondary);
     font-size: 0.85rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .filters {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    background: none;
+    border: 1px solid var(--color-border);
+    padding: 0.25em 0.75em;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .filter-btn:hover {
+    color: var(--color-text);
+    border-color: var(--color-text-secondary);
+  }
+
+  .filter-btn.active {
+    color: var(--color-text);
+    border-color: var(--color-text);
+    background: var(--color-text);
+    color: white;
   }
 
   .empty-state {
