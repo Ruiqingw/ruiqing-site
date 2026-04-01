@@ -13,6 +13,10 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const dateStr = new Date(entry.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+// If body is empty, fall back to rendering from the images array
+const hasBody = entry.body && entry.body.trim().length > 0;
+const fallbackImages = (entry.data.images || []).filter((src: string) => src !== entry.data.cover);
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>
@@ -31,10 +35,19 @@ const dateStr = new Date(entry.data.date).toLocaleDateString('en-US', { year: 'n
       <img src={entry.data.cover} alt={entry.data.title} loading="eager" />
     </div>
 
-    <!-- Body: free mix of text and images written in Obsidian -->
-    <div class="photo-body">
-      <Content />
-    </div>
+    {hasBody ? (
+      <!-- Body: free mix of text and images written in Obsidian -->
+      <div class="photo-body">
+        <Content />
+      </div>
+    ) : (
+      <!-- Fallback: render remaining images from frontmatter array -->
+      <div class="photo-grid">
+        {fallbackImages.map((src: string, i: number) => (
+          <img src={src} alt={`${entry.data.title} - ${i + 1}`} loading="lazy" />
+        ))}
+      </div>
+    )}
 
     <nav class="photo-back">
       <a href="/">&larr; Back to gallery</a>
@@ -98,6 +111,19 @@ const dateStr = new Date(entry.data.date).toLocaleDateString('en-US', { year: 'n
     max-width: 600px;
     margin: 1rem auto;
     color: var(--color-text-secondary);
+  }
+
+  .photo-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .photo-grid img {
+    width: 100%;
+    object-fit: contain;
+    display: block;
   }
 
   .photo-back {
