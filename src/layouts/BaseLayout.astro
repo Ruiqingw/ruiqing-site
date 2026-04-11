@@ -1,5 +1,6 @@
 ---
 import '@/styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -29,6 +30,7 @@ const pageTitle = title === 'Ruiqing' ? title : `${title} — Ruiqing`;
       rel="stylesheet"
     />
     <title>{pageTitle}</title>
+    <ClientRouter />
   </head>
   <body>
     <header class="site-header">
