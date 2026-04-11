@@ -64,12 +64,34 @@ const allImages = allPhotography.flatMap((project) => {
     lightboxImg.src = '';
   }
 
-  // Fade in images as they load
-  grid.querySelectorAll('img').forEach((img: HTMLImageElement) => {
-    if (img.complete) {
-      img.classList.add('loaded');
-    } else {
-      img.addEventListener('load', () => img.classList.add('loaded'));
+  // Show grid only after enough images have loaded so layout is stable
+  const THRESHOLD = 9; // wait for first ~9 images (3 cols × 3 rows)
+  const TIMEOUT = 2000; // fallback: show after 2s regardless
+  const imgs = [...grid.querySelectorAll('img')] as HTMLImageElement[];
+  let shown = false;
+  let loadedCount = 0;
+
+  function showGrid() {
+    if (shown) return;
+    shown = true;
+    grid.classList.add('visible');
+  }
+
+  const fallback = setTimeout(showGrid, TIMEOUT);
+
+  function onLoad() {
+    loadedCount++;
+    if (loadedCount >= Math.min(THRESHOLD, imgs.length)) {
+      clearTimeout(fallback);
+      showGrid();
+    }
+  }
+
+  imgs.forEach(img => {
+    if (img.complete) onLoad();
+    else {
+      img.addEventListener('load', onLoad);
+      img.addEventListener('error', onLoad);
     }
   });
 
@@ -94,6 +116,12 @@ const allImages = allPhotography.flatMap((project) => {
   .gallery-grid {
     columns: 3;
     column-gap: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  .gallery-grid.visible {
+    opacity: 1;
   }
 
   .gallery-item {
@@ -106,15 +134,10 @@ const allImages = allPhotography.flatMap((project) => {
   .gallery-item img {
     width: 100%;
     display: block;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.2s ease;
   }
 
-  .gallery-item img.loaded {
-    opacity: 1;
-  }
-
-  .gallery-item:hover img.loaded {
+  .gallery-item:hover img {
     opacity: 0.88;
   }
 
