@@ -12,11 +12,14 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+const dateStr = new Date(entry.data.date).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
 ---
 
 <PostLayout
   title={entry.data.title}
-  date={entry.data.date}
+  date={dateStr}
   tags={entry.data.tags}
   description={entry.data.description}
   backLink="/blog"
