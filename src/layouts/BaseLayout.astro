@@ -93,12 +93,26 @@ const pageTitle = title === 'Ruiqing' ? title : `${title} — Ruiqing`;
   }
 
   .site-nav a {
+    position: relative;
     font-size: 0.85rem;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-text-secondary);
+    padding-bottom: 0.35rem;
     transition: color 0.2s ease;
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-text);
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
   }
 
   .site-nav a:hover {
@@ -106,8 +120,17 @@ const pageTitle = title === 'Ruiqing' ? title : `${title} — Ruiqing`;
     opacity: 1;
   }
 
+  .site-nav a:hover::after {
+    width: 100%;
+  }
+
   .site-nav a.active {
     color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .site-nav a.active::after {
+    width: 100%;
   }
 
   main {
