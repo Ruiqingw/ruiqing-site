@@ -65,7 +65,7 @@ const allImages = allPhotography.flatMap((project) => {
   }
 
   // Show grid only after enough images have loaded so layout is stable
-  const THRESHOLD = 9; // wait for first ~9 images (3 cols × 3 rows)
+  const THRESHOLD = 6; // wait for first ~6 images (3 cols × 2 rows)
   const TIMEOUT = 2000; // fallback: show after 2s regardless
   const imgs = [...grid.querySelectorAll('img')] as HTMLImageElement[];
   let shown = false;
