@@ -64,6 +64,15 @@ const allImages = allPhotography.flatMap((project) => {
     lightboxImg.src = '';
   }
 
+  // Fade in images as they load
+  grid.querySelectorAll('img').forEach((img: HTMLImageElement) => {
+    if (img.complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'));
+    }
+  });
+
   grid.addEventListener('click', (e) => {
     const img = (e.target as Element).closest('.gallery-item img') as HTMLImageElement | null;
     if (img) openLightbox(img.src, img.alt);
@@ -97,10 +106,15 @@ const allImages = allPhotography.flatMap((project) => {
   .gallery-item img {
     width: 100%;
     display: block;
-    transition: opacity 0.25s ease;
+    opacity: 0;
+    transition: opacity 0.5s ease;
   }
 
-  .gallery-item:hover img {
+  .gallery-item img.loaded {
+    opacity: 1;
+  }
+
+  .gallery-item:hover img.loaded {
     opacity: 0.88;
   }
 
