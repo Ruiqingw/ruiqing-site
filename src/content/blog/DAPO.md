@@ -1,4 +1,6 @@
 ---
+title: "DAPO"
+date: 2025-12-22
 tags:
   - DAPO
   - GRPO

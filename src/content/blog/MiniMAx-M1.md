@@ -1,4 +1,6 @@
 ---
+title: "MiniMax-M1"
+date: 2025-12-28
 tags:
   - minimax
   - CISPO

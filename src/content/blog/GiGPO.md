@@ -1,4 +1,6 @@
 ---
+title: "GiGPO"
+date: 2025-12-24
 tags:
   - GRPO
   - AgentRL

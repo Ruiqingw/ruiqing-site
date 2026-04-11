@@ -1,4 +1,6 @@
 ---
+title: "GSPO"
+date: 2025-12-24
 tags:
   - 阿里
   - Qwen
