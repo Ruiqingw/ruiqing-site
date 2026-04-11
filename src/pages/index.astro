@@ -94,7 +94,9 @@ const allImages = allPhotography.flatMap((project) => {
   function closeLightbox() {
     lightbox.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    lightboxImg.src = '';
+    lightbox.addEventListener('transitionend', () => {
+      lightboxImg.src = '';
+    }, { once: true });
   }
 
   grid.addEventListener('click', (e) => {
