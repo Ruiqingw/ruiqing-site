@@ -4,7 +4,8 @@ date: 2025-03-10
 cover: "/photos/lightning/DSC01966.jpg"
 images:
   - "/photos/lightning/DSC01966.jpg"
-featured: []
+featured:
+  - "/photos/lightning/DSC01966.jpg"
 description: ""
 order: 2
 ---
