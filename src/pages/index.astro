@@ -16,12 +16,12 @@ const allImages = allPhotography.flatMap((project) => {
 <BaseLayout title="Ruiqing" description="Photography portfolio and personal blog by Ruiqing">
   <section class="gallery-section">
     <div class="gallery-grid" id="gallery-grid">
-      {allImages.map((img, i) => (
+      {allImages.map((img) => (
         <div class="gallery-item" data-title={img.alt}>
           <img
             src={img.src}
             alt={img.alt}
-            loading={i < 9 ? 'eager' : 'lazy'}
+            loading="eager"
             decoding="async"
           />
           <span class="gallery-label">{img.alt}</span>
@@ -48,20 +48,30 @@ const allImages = allPhotography.flatMap((project) => {
   }
   items.forEach(item => grid.appendChild(item));
 
-  // Reveal grid container, then fade in each image individually on load
+  // Reveal images strictly in DOM order (top-to-bottom cascade).
+  // Each image waits until all previous images have finished loading,
+  // so even if image N+1 downloads faster, it won't show before N.
   const imgs = [...grid.querySelectorAll('img')] as HTMLImageElement[];
-  grid.classList.add('visible');
+  const ready = new Array(imgs.length).fill(false);
+  let cursor = 0;
 
-  function markLoaded(img: HTMLImageElement) {
-    img.classList.add('loaded');
+  function advance() {
+    while (cursor < imgs.length && ready[cursor]) {
+      imgs[cursor].classList.add('loaded');
+      cursor++;
+    }
   }
 
-  imgs.forEach(img => {
+  imgs.forEach((img, i) => {
+    const mark = () => {
+      ready[i] = true;
+      advance();
+    };
     if (img.complete && img.naturalWidth > 0) {
-      markLoaded(img);
+      mark();
     } else {
-      img.addEventListener('load', () => markLoaded(img));
-      img.addEventListener('error', () => markLoaded(img));
+      img.addEventListener('load', mark, { once: true });
+      img.addEventListener('error', mark, { once: true });
     }
   });
 
