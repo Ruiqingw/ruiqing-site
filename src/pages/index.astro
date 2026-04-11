@@ -16,12 +16,13 @@ const allImages = allPhotography.flatMap((project) => {
 <BaseLayout title="Ruiqing" description="Photography portfolio and personal blog by Ruiqing">
   <section class="gallery-section">
     <div class="gallery-grid" id="gallery-grid">
-      {allImages.map((img) => (
+      {allImages.map((img, i) => (
         <div class="gallery-item" data-title={img.alt}>
           <img
             src={img.src}
             alt={img.alt}
-            loading="lazy"
+            loading={i < 9 ? 'eager' : 'lazy'}
+            decoding="async"
           />
           <span class="gallery-label">{img.alt}</span>
         </div>
@@ -47,34 +48,20 @@ const allImages = allPhotography.flatMap((project) => {
   }
   items.forEach(item => grid.appendChild(item));
 
-  // Reveal grid after first 6 images load
-  const THRESHOLD = 6;
-  const TIMEOUT = 2000;
+  // Reveal grid container, then fade in each image individually on load
   const imgs = [...grid.querySelectorAll('img')] as HTMLImageElement[];
-  let shown = false;
-  let loadedCount = 0;
+  grid.classList.add('visible');
 
-  function showGrid() {
-    if (shown) return;
-    shown = true;
-    grid.classList.add('visible');
-  }
-
-  const fallback = setTimeout(showGrid, TIMEOUT);
-
-  function onLoad() {
-    loadedCount++;
-    if (loadedCount >= Math.min(THRESHOLD, imgs.length)) {
-      clearTimeout(fallback);
-      showGrid();
-    }
+  function markLoaded(img: HTMLImageElement) {
+    img.classList.add('loaded');
   }
 
   imgs.forEach(img => {
-    if (img.complete) onLoad();
-    else {
-      img.addEventListener('load', onLoad);
-      img.addEventListener('error', onLoad);
+    if (img.complete && img.naturalWidth > 0) {
+      markLoaded(img);
+    } else {
+      img.addEventListener('load', () => markLoaded(img));
+      img.addEventListener('error', () => markLoaded(img));
     }
   });
 
@@ -122,12 +109,6 @@ const allImages = allPhotography.flatMap((project) => {
   .gallery-grid {
     columns: 3;
     column-gap: 2rem;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-  }
-
-  .gallery-grid.visible {
-    opacity: 1;
   }
 
   .gallery-item {
@@ -141,10 +122,15 @@ const allImages = allPhotography.flatMap((project) => {
   .gallery-item img {
     width: 100%;
     display: block;
-    transition: transform 0.5s ease, opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.7s ease, transform 0.5s ease;
   }
 
-  .gallery-item:hover img {
+  .gallery-item img.loaded {
+    opacity: 1;
+  }
+
+  .gallery-item:hover img.loaded {
     transform: scale(1.025);
     opacity: 0.92;
   }
