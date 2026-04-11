@@ -32,11 +32,13 @@ $$ (\ln f)' = \frac{f'}{f}$$
 unified fomulation:
 $$J_{\text{unify}}(\theta) = \mathbb{E}_{(q,a) \sim \mathcal{D}, \{o_i\}_{i=1}^G \sim \pi_{\theta_{\text{old}}}(\cdot|q)} \left[ \frac{1}{\sum_{i=1}^G |o_i|} \sum_{i=1}^G \sum_{t=1}^{|o_i|} \text{sg}(\hat{r}_{i,t}(\theta))\hat{A}_{i,t} \log \pi_\theta(o_{i,t} | q, o_{i, <t}) M_{i,t} \right]$$
 where $M_{i,t}$ is defined as:
-$$M_{i,t} = \begin{cases} 
+$$
+M_{i,t} = \begin{cases} 
 0 & \text{if } \hat{A}_{i,t} > 0 \text{ and } r_{i,t}(\theta) > 1 + \epsilon_{\text{high}}, \\ 
 0 & \text{if } \hat{A}_{i,t} < 0 \text{ and } r_{i,t}(\theta) < 1 - \epsilon_{\text{low}}, \\ 
 1 & \text{otherwise.} 
-\end{cases}$$
+\end{cases}
+$$
 
 ### GSPO与CISPO对比
 | **维度**       | **GSPO (General Sequence PO)**                            | **CISPO (Clipped IS PO)**                                          |
