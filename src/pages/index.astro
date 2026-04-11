@@ -4,12 +4,13 @@ import { getCollection } from 'astro:content';
 
 const allPhotography = await getCollection('photography');
 
-const allImages = allPhotography.flatMap((project) =>
-  project.data.images.map((src: string) => ({
+const allImages = allPhotography.flatMap((project) => {
+  const featured = project.data.featured ?? [];
+  return featured.map((src: string) => ({
     src,
     alt: project.data.title,
-  }))
-);
+  }));
+});
 ---
 
 <BaseLayout title="Ruiqing" description="Photography portfolio and personal blog by Ruiqing">

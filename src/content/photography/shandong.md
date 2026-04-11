@@ -6,6 +6,7 @@ images:
   - "/photos/shandong/DSC00387.jpg"
   - "/photos/shandong/DSC00861-已增强-降噪.jpg"
   - "/photos/shandong/DSC01091-已增强-降噪.jpg"
+featured: []
 description: ""
 order: 4
 ---

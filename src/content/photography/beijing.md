@@ -20,6 +20,9 @@ images:
   - "/photos/beijing/DSC01696.jpg"
   - "/photos/beijing/DSC01703.jpg"
   - "/photos/beijing/DSC01706.jpg"
+featured:
+  - "/photos/beijing/DSC01487.jpg"
+  - "/photos/beijing/DSC01495.jpg"
 description: ""
 order: 3
 ---

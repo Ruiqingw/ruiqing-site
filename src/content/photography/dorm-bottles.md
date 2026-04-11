@@ -10,6 +10,7 @@ images:
   - "/photos/dorm-bottles/DSC06654.jpg"
   - "/photos/dorm-bottles/DSC06658.jpg"
   - "/photos/dorm-bottles/DSC06675.jpg"
+featured: []
 description: "宿舍里的酒瓶，不同色温灯光下的玻璃质感。"
 order: 1
 ---

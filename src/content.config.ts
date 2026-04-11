@@ -8,6 +8,7 @@ const photography = defineCollection({
     date: z.coerce.string(),
     cover: z.string(),
     images: z.array(z.string()).optional(),
+    featured: z.array(z.string()).optional(),
     description: z.string().optional(),
     order: z.number().optional(),
   }),
