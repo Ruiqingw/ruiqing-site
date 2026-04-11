@@ -60,37 +60,37 @@ const existingCategories = [...new Set(
   </section>
 </BaseLayout>
 
-<script is:inline>
-  const buttons = document.querySelectorAll('.filter-btn');
-  const items = document.querySelectorAll('#posts li');
-  const selected = new Set();
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const buttons = document.querySelectorAll('.filter-btn');
+    const items = document.querySelectorAll('#posts li');
+    const selected = new Set();
 
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const filter = btn.dataset.filter;
-      if (selected.has(filter)) {
-        selected.delete(filter);
-        btn.classList.remove('active');
-      } else {
-        selected.add(filter);
-        btn.classList.add('active');
-      }
-      applyFilter();
+    function applyFilter() {
+      items.forEach((item) => {
+        if (selected.size === 0) {
+          item.style.display = '';
+          return;
+        }
+        const cat = item.dataset.category;
+        item.style.display = selected.has(cat) ? '' : 'none';
+      });
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        if (selected.has(filter)) {
+          selected.delete(filter);
+          btn.classList.remove('active');
+        } else {
+          selected.add(filter);
+          btn.classList.add('active');
+        }
+        applyFilter();
+      });
     });
   });
-
-  function applyFilter() {
-    items.forEach((item) => {
-      // 没有选中任何标签 → 显示全部
-      if (selected.size === 0) {
-        item.style.display = '';
-        return;
-      }
-      // OR 逻辑：只要 item 的 category 在已选中集合里就显示
-      const cat = item.dataset.category;
-      item.style.display = selected.has(cat) ? '' : 'none';
-    });
-  }
 </script>
 
 <style>

@@ -38,77 +38,86 @@ const allImages = allPhotography.flatMap((project) => {
 </BaseLayout>
 
 <script>
-  const grid = document.getElementById('gallery-grid')!;
+  function initGallery() {
+    const grid = document.getElementById('gallery-grid');
+    if (!grid) return;
 
-  // Shuffle
-  const items = [...grid.children] as Element[];
-  for (let i = items.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [items[i], items[j]] = [items[j], items[i]];
-  }
-  items.forEach(item => grid.appendChild(item));
-
-  // Reveal images strictly in DOM order (top-to-bottom cascade).
-  // Each image waits until all previous images have finished loading,
-  // so even if image N+1 downloads faster, it won't show before N.
-  const imgs = [...grid.querySelectorAll('img')] as HTMLImageElement[];
-  const ready = new Array(imgs.length).fill(false);
-  let cursor = 0;
-
-  function advance() {
-    while (cursor < imgs.length && ready[cursor]) {
-      imgs[cursor].classList.add('loaded');
-      cursor++;
+    // Shuffle
+    const items = [...grid.children] as Element[];
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
     }
-  }
+    items.forEach(item => grid.appendChild(item));
 
-  imgs.forEach((img, i) => {
-    const mark = () => {
-      ready[i] = true;
-      advance();
+    // Reveal images strictly in DOM order (top-to-bottom cascade).
+    const imgs = [...grid.querySelectorAll('img')] as HTMLImageElement[];
+    const ready = new Array(imgs.length).fill(false);
+    let cursor = 0;
+
+    function advance() {
+      while (cursor < imgs.length && ready[cursor]) {
+        imgs[cursor].classList.add('loaded');
+        cursor++;
+      }
+    }
+
+    imgs.forEach((img, i) => {
+      const mark = () => {
+        ready[i] = true;
+        advance();
+      };
+      if (img.complete && img.naturalWidth > 0) {
+        mark();
+      } else {
+        img.addEventListener('load', mark, { once: true });
+        img.addEventListener('error', mark, { once: true });
+      }
+    });
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxBackdrop = document.getElementById('lightbox-backdrop');
+    if (!lightbox || !lightboxImg || !lightboxClose || !lightboxBackdrop) return;
+
+    function openLightbox(src: string, alt: string) {
+      lightboxImg!.src = src;
+      lightboxImg!.alt = alt;
+      lightbox!.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox!.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      lightbox!.addEventListener('transitionend', () => {
+        lightboxImg!.src = '';
+      }, { once: true });
+    }
+
+    grid.addEventListener('click', (e) => {
+      const item = (e.target as Element).closest('.gallery-item') as HTMLElement | null;
+      if (item) {
+        const img = item.querySelector('img') as HTMLImageElement | null;
+        if (img) openLightbox(img.src, img.alt);
+      }
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxBackdrop.addEventListener('click', closeLightbox);
+
+    const escHandler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLightbox();
     };
-    if (img.complete && img.naturalWidth > 0) {
-      mark();
-    } else {
-      img.addEventListener('load', mark, { once: true });
-      img.addEventListener('error', mark, { once: true });
-    }
-  });
-
-  // Lightbox
-  const lightbox = document.getElementById('lightbox')!;
-  const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-  const lightboxClose = document.getElementById('lightbox-close')!;
-  const lightboxBackdrop = document.getElementById('lightbox-backdrop')!;
-
-  function openLightbox(src: string, alt: string) {
-    lightboxImg.src = src;
-    lightboxImg.alt = alt;
-    lightbox.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeLightbox() {
-    lightbox.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    lightbox.addEventListener('transitionend', () => {
-      lightboxImg.src = '';
+    document.addEventListener('keydown', escHandler);
+    document.addEventListener('astro:before-swap', () => {
+      document.removeEventListener('keydown', escHandler);
     }, { once: true });
   }
 
-  grid.addEventListener('click', (e) => {
-    const item = (e.target as Element).closest('.gallery-item') as HTMLElement | null;
-    if (item) {
-      const img = item.querySelector('img') as HTMLImageElement | null;
-      if (img) openLightbox(img.src, img.alt);
-    }
-  });
-
-  lightboxClose.addEventListener('click', closeLightbox);
-  lightboxBackdrop.addEventListener('click', closeLightbox);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
-  });
+  document.addEventListener('astro:page-load', initGallery);
 </script>
 
 <style>

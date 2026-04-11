@@ -216,8 +216,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     'Prefer': 'return=minimal',
   };
 
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
   async function loadMessages() {
     const container = document.getElementById('gb-messages');
+    if (!container) return;
     try {
       const res = await fetch(
         `${SUPABASE_URL}/rest/v1/guestbook?select=*&order=created_at.desc&limit=50`,
@@ -249,47 +256,48 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
     }
   }
 
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+  function initGuestbook() {
+    const form = document.getElementById('gb-form');
+    if (!form) return;
+
+    loadMessages();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('gb-submit');
+      const messageEl = document.getElementById('gb-message');
+      const nameEl = document.getElementById('gb-name');
+
+      const message = messageEl.value.trim();
+      if (!message) return;
+
+      const name = nameEl.value.trim() || '匿名';
+
+      btn.disabled = true;
+      btn.textContent = '发送中...';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ name, message }),
+        });
+
+        if (res.ok) {
+          messageEl.value = '';
+          nameEl.value = '';
+          await loadMessages();
+        } else {
+          alert('发送失败，请稍后重试');
+        }
+      } catch (err) {
+        alert('网络错误，请稍后重试');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '发送';
+      }
+    });
   }
 
-  document.getElementById('gb-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('gb-submit');
-    const messageEl = document.getElementById('gb-message');
-    const nameEl = document.getElementById('gb-name');
-
-    const message = messageEl.value.trim();
-    if (!message) return;
-
-    const name = nameEl.value.trim() || '匿名';
-
-    btn.disabled = true;
-    btn.textContent = '发送中...';
-
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/guestbook`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ name, message }),
-      });
-
-      if (res.ok) {
-        messageEl.value = '';
-        nameEl.value = '';
-        await loadMessages();
-      } else {
-        alert('发送失败，请稍后重试');
-      }
-    } catch (err) {
-      alert('网络错误，请稍后重试');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '发送';
-    }
-  });
-
-  loadMessages();
+  document.addEventListener('astro:page-load', initGuestbook);
 </script>

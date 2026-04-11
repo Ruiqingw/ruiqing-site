@@ -53,16 +53,18 @@ const pageTitle = title === 'Ruiqing' ? title : `${title} — Ruiqing`;
       <p>&copy; {new Date().getFullYear()} Ruiqing</p>
     </footer>
 
-    <script is:inline>
-      fetch('https://etrtkmkizxecepvjoreq.supabase.co/rest/v1/page_views', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': 'sb_publishable_FoMsrAxIp-4PzFV7CHzSBw_YQ6PXZAH',
-          'Authorization': 'Bearer sb_publishable_FoMsrAxIp-4PzFV7CHzSBw_YQ6PXZAH',
-        },
-        body: JSON.stringify({ page: window.location.pathname }),
-      }).catch(() => {});
+    <script>
+      document.addEventListener('astro:page-load', () => {
+        fetch('https://etrtkmkizxecepvjoreq.supabase.co/rest/v1/page_views', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': 'sb_publishable_FoMsrAxIp-4PzFV7CHzSBw_YQ6PXZAH',
+            'Authorization': 'Bearer sb_publishable_FoMsrAxIp-4PzFV7CHzSBw_YQ6PXZAH',
+          },
+          body: JSON.stringify({ page: window.location.pathname }),
+        }).catch(() => {});
+      });
     </script>
   </body>
 </html>
