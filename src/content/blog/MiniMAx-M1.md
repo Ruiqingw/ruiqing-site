@@ -26,6 +26,7 @@ url: https://arxiv.org/abs/2506.13585
 # CISPO(Clipped IS-weight Policy Optimization)
 完整公式如下：
 $$J_{CISPO} = \mathbb{E} \left[ \underbrace{\text{detach}\left( \text{clip}(r_t, 1-\epsilon_{low}, 1+\epsilon_{high}) \right)}_{\text{完整的被锁定权重}} \cdot \hat{A}_t \cdot \log \pi_\theta(t) \right]$$
+
 注意这里与GSPO的写法不一样，但是本质是一样的，分子分母约掉，剩下token-level的梯度：
 $$ (\ln f)' = \frac{f'}{f}$$
 
