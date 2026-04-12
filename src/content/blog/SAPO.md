@@ -21,7 +21,7 @@ $$\mathcal{J}(\theta) = \mathbb{E}_{q \sim \mathcal{D}, \{y_i\}_{i=1}^G \sim \pi
 where $f_{i,t}(x)$ is defined as:
 $$f_{i,t}(x) = \sigma(\tau_{i,t}(x-1)) \cdot \frac{4}{\tau_{i,t}}, \quad \tau_{i,t} = \begin{cases} \tau_{\text{pos}}, & \text{if } \hat{A}_{i,t} > 0 \\ \tau_{\text{neg}}, & \text{otherwise} \end{cases}$$
 
-其中**$f_{i,t}$ (Token-level Gate)：** 根据当前 Token 的 $r_{i,t}$ 计算出一个权重。
+其中 $f_{i,t}$ **(Token-level Gate)：** 根据当前 Token 的 $r_{i,t}$ 计算出一个权重。
 
 - 如果这个 Token 很离谱，$f_{i,t}$ 会变小（软截断）。
     
