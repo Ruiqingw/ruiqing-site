@@ -43,7 +43,7 @@ const { title, date, tags, description, category, backLink, backText } = Astro.p
 
 <style>
   .post {
-    max-width: 720px;
+    max-width: 860px;
     margin: 0 auto;
     padding: 2rem;
   }
@@ -107,11 +107,20 @@ const { title, date, tags, description, category, backLink, backText } = Astro.p
     line-height: 1.8;
   }
 
+  .post-body :global(h1) {
+    font-size: 1.3rem;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    font-weight: 600;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+
   .post-body :global(h2) {
     font-size: 1.15rem;
     text-transform: none;
     letter-spacing: 0.01em;
-    font-weight: 500;
+    font-weight: 600;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
   }
@@ -120,7 +129,7 @@ const { title, date, tags, description, category, backLink, backText } = Astro.p
     font-size: 1rem;
     text-transform: none;
     letter-spacing: 0.01em;
-    font-weight: 500;
+    font-weight: 600;
     margin-top: 2rem;
     margin-bottom: 0.75rem;
   }
@@ -151,6 +160,45 @@ const { title, date, tags, description, category, backLink, backText } = Astro.p
 
   .post-body :global(li) {
     margin-bottom: 0.3em;
+  }
+
+  /* Math display blocks */
+  .post-body :global(.katex-display) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0;
+    margin: 1.5rem 0;
+    text-align: center;
+  }
+
+  .post-body :global(.katex-display > .katex) {
+    text-align: center;
+  }
+
+  /* Tables */
+  .post-body :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .post-body :global(th),
+  .post-body :global(td) {
+    border: 1px solid var(--color-border);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .post-body :global(th) {
+    font-weight: 600;
+    background: #fafafa;
+  }
+
+  .post-body :global(tr:hover) {
+    background: #fafafa;
   }
 
   .post-back {
