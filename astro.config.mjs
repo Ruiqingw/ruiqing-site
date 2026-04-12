@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkObsidianCallout from 'remark-obsidian-callout';
 
 export default defineConfig({
   site: 'https://ruiqing.wang',
@@ -14,7 +15,7 @@ export default defineConfig({
     service: passthroughImageService(),
   },
   markdown: {
-    remarkPlugins: [remarkMath],
+    remarkPlugins: [remarkMath, remarkObsidianCallout],
     rehypePlugins: [rehypeKatex],
     shikiConfig: {
       theme: 'github-light',
