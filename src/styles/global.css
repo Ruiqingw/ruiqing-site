@@ -20,11 +20,6 @@
   --nav-height: 80px;
 }
 
-::selection {
-  background: #d0d0d0;
-  color: #1a1a1a;
-}
-
 html {
   font-size: 17px;
   scroll-behavior: smooth;
@@ -107,8 +102,8 @@ p {
 
 /* ===== Selection ===== */
 ::selection {
-  background: var(--color-text);
-  color: var(--color-bg);
+  background: #d0d0d0;
+  color: #1a1a1a;
 }
 
 /* ===== Scrollbar (minimal) ===== */
