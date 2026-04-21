@@ -19,5 +19,19 @@
     "timezone": "UTC-4",
     "city": "Atlanta",
     "content": "人可不可以毫无意义的赖活着？好像可以，好像不应该。我先这么叫你吧，后现代人"
+  },
+  {
+    "id": "4",
+    "datetime": "2026-04-21T00:07:00",
+    "timezone": "UTC-4",
+    "city": "Atlanta",
+    "content": "在这个所有想法都能快速被实现的时代，真正重要的到底是什么"
+  },
+  {
+    "id": "5",
+    "datetime": "2026-04-21T00:25:00",
+    "timezone": "UTC-4",
+    "city": "Atlanta",
+    "content": "交易真的是一件很好的工作。"
   }
 ]
