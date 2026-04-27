@@ -33,5 +33,19 @@
     "timezone": "UTC-4",
     "city": "Atlanta",
     "content": "交易真的是一件很好的工作。"
+  },
+  {
+    "id": "6",
+    "datetime": "2026-04-25T21:09:00",
+    "timezone": "UTC-4",
+    "city": "Atlanta",
+    "content": "copilot觉得ta自己可能是个不太好的人。（在什么内容都没有的情况下自动补全的）"
+  },
+  {
+    "id": "7",
+    "datetime": "2026-04-26T20:05:00",
+    "timezone": "UTC-4",
+    "city": "Atlanta",
+    "content": "因为AI coding，我被迫成为一个多线程人。"
   }
 ]
