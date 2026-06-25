@@ -93,7 +93,7 @@ Create `src/content/essays/my-essay.md`:
 ---
 title: "Essay Title"
 date: 2026-03-11
-category: "film-review"  # essay | film-review | book-review | thought | poem
+category: "film-review"  # essay | film-review | book-review | thought | poem | trading
 description: "Brief description"
 ---
 ```

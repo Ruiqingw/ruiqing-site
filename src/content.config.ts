@@ -30,7 +30,7 @@ const essays = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.string(),
-    category: z.enum(['essay', 'film-review', 'book-review', 'thought', 'poem']).optional(),
+    category: z.enum(['essay', 'film-review', 'book-review', 'thought', 'poem', 'trading']).optional(),
     description: z.string().optional(),
     draft: z.boolean().optional(),
   }),
