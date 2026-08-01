@@ -61,5 +61,12 @@
     "timezone": "UTC+8",
     "city": "Suzhou",
     "content": "最近的生活太平静，没有一丝情绪，甚至有些难以忍耐"
+  },
+  {
+    "id": "10",
+    "datetime": "2026-08-01T18:08:15",
+    "timezone": "UTC+8",
+    "city": "Suzhou",
+    "content": "老朋友发来问候，似乎总是在低落之时，是凑巧还是因为总是闷闷不乐😮"
   }
 ]
