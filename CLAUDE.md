@@ -30,7 +30,7 @@ Three collections using Astro's glob loader:
 
 ### Static Assets
 
-- `public/photos/` — Photography images organized by city/project subdirectories
+- `src/assets/photos/` — Photography images organized by city/project subdirectories. Frontmatter still references them as `/photos/...`; `src/lib/photos.ts` (`getPhoto`) maps those paths to imported images so `<Image>`/`getImage` generate responsive WebP at build time. Never render photos with a raw `<img src>`.
 - `public/blog-images/` — Images referenced in blog posts
 
 ### Key Patterns

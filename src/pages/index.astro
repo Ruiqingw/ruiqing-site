@@ -1,27 +1,36 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import { getPhoto } from '@/lib/photos';
 
 const allPhotography = await getCollection('photography');
 
-const allImages = allPhotography.flatMap((project) => {
-  const featured = project.data.featured ?? [];
-  return featured.map((src: string) => ({
-    src,
-    alt: project.data.title,
-  }));
-});
+const allImages = await Promise.all(
+  allPhotography.flatMap((project) => {
+    const featured = project.data.featured ?? [];
+    return featured.map(async (src: string) => {
+      const photo = getPhoto(src);
+      // Lightbox loads a separate large version only when opened
+      const full = await getImage({ src: photo, width: Math.min(photo.width, 2048), format: 'webp' });
+      return { photo, full: full.src, alt: project.data.title };
+    });
+  }),
+);
 ---
 
 <BaseLayout title="Ruiqing" description="Photography portfolio and personal blog by Ruiqing">
   <section class="gallery-section">
     <div class="gallery-grid" id="gallery-grid">
       {allImages.map((img) => (
-        <div class="gallery-item" data-title={img.alt}>
-          <img
-            src={img.src}
+        <div class="gallery-item" data-title={img.alt} data-full={img.full}>
+          <Image
+            src={img.photo}
             alt={img.alt}
-            loading="eager"
+            widths={[480, 720, 960, 1280]}
+            sizes="(max-width: 480px) 92vw, (max-width: 768px) 46vw, 30vw"
+            format="webp"
+            loading="lazy"
             decoding="async"
           />
           <span class="gallery-label">{img.alt}</span>
@@ -50,23 +59,11 @@ const allImages = allPhotography.flatMap((project) => {
     }
     items.forEach(item => grid.appendChild(item));
 
-    // Reveal images strictly in DOM order (top-to-bottom cascade).
+    // Fade each image in once it loads. Images are lazy-loaded, so waiting
+    // for strict DOM order would stall on photos that are still offscreen.
     const imgs = [...grid.querySelectorAll('img')] as HTMLImageElement[];
-    const ready = new Array(imgs.length).fill(false);
-    let cursor = 0;
-
-    function advance() {
-      while (cursor < imgs.length && ready[cursor]) {
-        imgs[cursor].classList.add('loaded');
-        cursor++;
-      }
-    }
-
-    imgs.forEach((img, i) => {
-      const mark = () => {
-        ready[i] = true;
-        advance();
-      };
+    imgs.forEach((img) => {
+      const mark = () => img.classList.add('loaded');
       if (img.complete && img.naturalWidth > 0) {
         mark();
       } else {
@@ -101,7 +98,7 @@ const allImages = allPhotography.flatMap((project) => {
       const item = (e.target as Element).closest('.gallery-item') as HTMLElement | null;
       if (item) {
         const img = item.querySelector('img') as HTMLImageElement | null;
-        if (img) openLightbox(img.src, img.alt);
+        if (img) openLightbox(item.dataset.full || img.currentSrc || img.src, img.alt);
       }
     });
 
@@ -140,6 +137,7 @@ const allImages = allPhotography.flatMap((project) => {
 
   .gallery-item img {
     width: 100%;
+    height: auto;
     display: block;
     opacity: 0;
     transition: opacity 0.7s ease, transform 0.5s ease;

@@ -41,8 +41,10 @@ src/content/
 ├── blog/           # Tech blog posts (Markdown)
 └── essays/         # Essays, reviews, thoughts (Markdown)
 
+src/assets/
+└── photos/         # Photography images (organized by city/project), resized to WebP at build time
+
 public/
-├── photos/         # Photography images (organized by city/project)
 ├── blog-images/    # Images used in blog posts
 └── favicon.svg
 ```
