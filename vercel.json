@@ -1,3 +1,7 @@
 {
-  "framework": "astro"
+  "framework": "astro",
+  "rewrites": [
+    { "source": "/market-analysis", "destination": "https://mac-mini-1.tailc2a5dc.ts.net/" },
+    { "source": "/market-analysis/:path*", "destination": "https://mac-mini-1.tailc2a5dc.ts.net/:path*" }
+  ]
 }
